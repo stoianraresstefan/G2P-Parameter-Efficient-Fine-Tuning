@@ -216,3 +216,22 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# --- G2P project ---
+# Kaggle bundle staging / build artifacts and pulled kernel outputs
+kaggle/_staging/
+kaggle/_build/
+kaggle/bundle/g2p_bundle.zip
+kaggle/bundle/dataset-metadata.json
+results/_kaggle_*/
+# Local credentials must never be committed
+kaggle.json
+# Local LaTeX engine (downloaded binary) and build aux files
+.tools/
+paper/*.aux
+paper/*.bbl
+paper/*.blg
+paper/*.out
+paper/*.toc
+# Third-party SIGMORPHON data/eval clone (fetched on demand, not part of this repo)
+2021-task1/

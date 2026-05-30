@@ -1,0 +1,6 @@
+# Local (CPU) dependencies: data prep, Kaggle orchestration, analysis/plots.
+# Heavy ML libs (torch/transformers/peft) are NOT needed locally — they run on Kaggle.
+kaggle>=1.6.17
+requests>=2.31
+matplotlib>=3.8
+numpy>=1.26
