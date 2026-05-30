@@ -1,0 +1,27 @@
+{
+  "language": "rum",
+  "lang_tag": "ron",
+  "method": "lora",
+  "lora_rank": 16,
+  "lora_alpha": 32,
+  "seed": 42,
+  "per": 3.36,
+  "wer": 15.0,
+  "trainable_params": 2375680,
+  "total_params": 303143936,
+  "trainable_pct": 0.7837,
+  "train_seconds": 471.8,
+  "forgetting_per": 35.11,
+  "base_model": "charsiu/g2p_multilingual_byT5_small",
+  "epochs": 40,
+  "lr": 0.001,
+  "batch_size": 16,
+  "test_n": 100,
+  "eng_n": 1000,
+  "provenance": {
+    "transformers": "5.0.0",
+    "torch": "2.10.0+cu128",
+    "gpu": "Tesla T4",
+    "peft": "0.13.2"
+  }
+}
