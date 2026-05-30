@@ -20,7 +20,7 @@ Standard IEEE block. Emails, university, course code.
 
 1. **Context** (1 sentence) — G2P is critical for TTS/ASR; pretrained multilingual models like ByT5-G2P exist but per-language adaptation relies on full fine-tuning.
 2. **Gap** (1 sentence) — Parameter-efficient fine-tuning (PEFT) is standard in adjacent fields (LLMs, ASR) but unexplored for G2P.
-3. **Contribution** (2 sentences) — We benchmark LoRA against full fine-tuning and a frozen-base reference on ByT5-G2P, using Romanian and Modern Greek from the SIGMORPHON 2021 low-resource subtask, measuring PER, WER, trainable parameter count, and forgetting on English CMUDict.
+3. **Contribution** (2 sentences) — We benchmark LoRA against full fine-tuning and a frozen-base reference on ByT5-G2P, using Romanian and Modern Greek from the SIGMORPHON 2021 low-resource subtask, measuring PER, WER, trainable parameter count, and forgetting on English (eng-us IPA).
 4. **Results** (2 sentences) — Headline number to fill after experiments, e.g., _"LoRA with rank 8 matches full FT within X% PER while training Y% of parameters and preserving English performance."_
 5. **Takeaway** (1 sentence) — PEFT is a practical default for per-language G2P deployment.
 
@@ -40,7 +40,7 @@ Standard IEEE block. Emails, university, course code.
 
 - First study of LoRA for multilingual G2P.
 - Benchmark on Romanian (Latin script, Romance) and Modern Greek (Greek script, Hellenic), both 1000-word low-resource splits from SIGMORPHON 2021 Subtask 3.
-- Measure PER, WER, trainable parameter ratio, and catastrophic forgetting on English CMUDict.
+- Measure PER, WER, trainable parameter ratio, and catastrophic forgetting on English (eng-us IPA).
 - Code released.
 
 **Paragraph 5 — Research question.**
@@ -103,7 +103,7 @@ _(Subtask 3 provides 1000 words per language, split 80/10/10 by the task organiz
 
 **Why this pair.** Both languages share the SIGMORPHON 2021 low-resource protocol — identical splits, evaluation script, and dataset size — making the cross-language comparison clean. They differ on three axes that exercise the model: **script** (Latin vs Greek), **language branch** (Romance vs Hellenic), and **orthographic patterns** (Romanian has palatalized sequences such as `lʷ`; Greek has consonant clusters and digraphs such as `μπ` → /b/). Both share an Indo-European root, so the inventory of target phonemes overlaps partially — a clean condition for studying PEFT generalization. Reported SIGMORPHON 2021 baseline WER: 10% on Romanian, 21% on Modern Greek, giving us measurable headroom on both.
 
-**English CMUDict (v0.7b)** is used **only** for the catastrophic forgetting evaluation. We hold out a 1000-word random sample.
+**English (eng-us) IPA** from the SIGMORPHON 2021 high-resource split (`eng_us_test.tsv`, WikiPron-derived) is used **only** for the catastrophic-forgetting evaluation. We hold out a fixed 1000-word random sample (seeded). We deliberately avoid CMUDict here: CMUDict is ARPAbet, whereas ByT5-G2P emits IPA, so scoring IPA predictions against ARPAbet gold would be invalid. Using the model's own `<eng-us>` IPA convention keeps predictions and references in the same phoneme alphabet, and the forgetting signal is the PER delta (post-adaptation minus zero-shot).
 
 **Preprocessing.** Use SIGMORPHON 2021 splits as provided. Tokenize at byte level (ByT5 native). Filter pairs >50 characters. Normalize to NFC (matching SIGMORPHON convention).
 
@@ -111,7 +111,7 @@ _(Subtask 3 provides 1000 words per language, split 80/10/10 by the task organiz
 
 - Load pretrained `charsiu/g2p_multilingual_byT5_small` from HuggingFace (~300M parameters).
 - Evaluate **zero-shot** on Romanian and Greek test sets — no training, just inference with greedy decoding (CharsiuG2P authors note beam search does not help).
-- Use the appropriate language-code prefix: `<rum>:` for Romanian, `<gre>:` for Greek.
+- Use the appropriate CharsiuG2P language-code prefix with a trailing space: `<ron>: ` for Romanian and `<gre>: ` for Greek. Note the SIGMORPHON files are named `rum_*` (ISO 639-2/B), but CharsiuG2P was trained with the ISO 639-3 tag `ron`; using `<rum>` would not match a known language tag.
 - This satisfies the rubric's "baseline (e.g., ... pretrained model)" requirement.
 - Establishes the "no adaptation" lower bound.
 
@@ -134,12 +134,12 @@ All variants share LR, batch size, and epochs within each language for fair comp
 
 - **Primary metrics:** Phoneme Error Rate (PER) and Word Error Rate (WER), computed with the official SIGMORPHON 2021 `evaluate.py` script for full comparability.
 - **Efficiency metrics:** trainable parameter count (absolute + % of base), training wall-clock time.
-- **Forgetting metric:** PER on the 1000-word English CMUDict held-out set, before vs. after adaptation. Measured for **best LoRA config** and **full FT only**, not every config.
+- **Forgetting metric:** PER on the 1000-word English (eng-us) IPA held-out set, before vs. after adaptation. Computed for every adapted model (zero-shot baseline, best LoRA config, and full FT) — the held-out inference is cheap, so the deltas are directly comparable.
 - **Seeds:** 1 seed for main experiments; **3 seeds for the headline LoRA r=8 config on Romanian** to estimate variance.
 
 ### F. Implementation Details
 
-HuggingFace `transformers` + `peft`. Kaggle 2× T4 GPUs, fp16 mixed precision. Code released on GitHub.
+HuggingFace `transformers` + `peft`. Kaggle single 16 GB GPU (T4 or P100); ByT5-small fits comfortably, so multi-GPU is unnecessary. We use **bf16 where supported and fp32 otherwise** rather than fp16, because T5/ByT5 are numerically unstable in fp16. Code released on GitHub.
 
 ---
 
@@ -165,7 +165,7 @@ Scatter plot — x-axis: trainable parameters (log scale); y-axis: PER. Each met
 
 ### E. Catastrophic Forgetting Analysis
 
-For the best LoRA config and for full FT, evaluate the adapted model on the held-out English CMUDict sample. Bar chart with three bars per language: zero-shot baseline, LoRA-adapted, full-FT-adapted.
+For the best LoRA config and for full FT, evaluate the adapted model on the held-out English (eng-us) IPA sample. Bar chart with three bars per language: zero-shot baseline, LoRA-adapted, full-FT-adapted.
 
 > Predicted finding: full FT noticeably degrades English; LoRA preserves it. Likely a clean win for PEFT.
 
@@ -188,7 +188,7 @@ Heavy on visualizations:
 
 **Figure 1 — Pareto frontier.** PER vs. trainable parameters across configurations.
 
-**Figure 2 — Forgetting.** English CMUDict PER for: original ByT5-G2P, after-LoRA, after-full-FT (Romanian and Greek separately).
+**Figure 2 — Forgetting.** English (eng-us) IPA PER for: original ByT5-G2P, after-LoRA, after-full-FT (Romanian and Greek separately).
 
 ### Discussion (prose, not bullets)
 
