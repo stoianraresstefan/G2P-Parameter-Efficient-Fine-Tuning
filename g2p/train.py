@@ -8,15 +8,29 @@ PER/WER are recomputed from decoded predictions (not read from the Trainer's
 internal metric) so the reported numbers are guaranteed to follow the
 SIGMORPHON convention exactly.
 """
+
 from __future__ import annotations
 
 import shutil
 import time
+import torch
 from pathlib import Path
+from transformers import Seq2SeqTrainingArguments, set_seed
 
 from . import config as C
-from .data import read_tsv, filter_long, to_hf_dataset, build_input, load_english_forgetting
-from .metrics import per as per_metric, wer as wer_metric, make_compute_metrics, to_chars
+from .data import (
+    read_tsv,
+    filter_long,
+    to_hf_dataset,
+    build_input,
+    load_english_forgetting,
+)
+from .metrics import (
+    per as per_metric,
+    wer as wer_metric,
+    make_compute_metrics,
+    to_chars,
+)
 from .model import (
     load_base,
     build_zeroshot,
@@ -29,8 +43,6 @@ from .model import (
 
 def _generate(model, tokenizer, input_texts, device, batch_size: int = 32):
     """Greedy-decode a list of prefixed input strings -> list of phoneme strings."""
-    import torch
-
     model.eval()
     out_all = []
     for i in range(0, len(input_texts), batch_size):
@@ -57,8 +69,6 @@ def tag_smoke_test(language: str, data_dir, n: int = 50):
     raw SIGMORPHON file code. The correct tag (e.g. `ron`) should score far
     lower than the invalid one (`rum`). Returns {tag: per}.
     """
-    import torch
-
     model, tokenizer = load_base()
     device = "cuda" if torch.cuda.is_available() else "cpu"
     model.to(device)
@@ -74,7 +84,11 @@ def tag_smoke_test(language: str, data_dir, n: int = 50):
 
 
 def _build_trainer(model, tokenizer, args, train_ds, dev_ds, patience):
-    from transformers import Seq2SeqTrainer, DataCollatorForSeq2Seq, EarlyStoppingCallback
+    from transformers import (
+        Seq2SeqTrainer,
+        DataCollatorForSeq2Seq,
+        EarlyStoppingCallback,
+    )
 
     collator = DataCollatorForSeq2Seq(tokenizer, model=model, padding=True)
     kwargs = dict(
@@ -94,9 +108,6 @@ def _build_trainer(model, tokenizer, args, train_ds, dev_ds, patience):
 
 
 def run_training(spec: C.RunSpec, data_dir, eng_test_path, out_dir) -> dict:
-    import torch
-    from transformers import Seq2SeqTrainingArguments, set_seed
-
     set_seed(spec.seed)
     device = "cuda" if torch.cuda.is_available() else "cpu"
     # ByT5/T5 are numerically unstable in fp16 (well-documented NaN losses), so

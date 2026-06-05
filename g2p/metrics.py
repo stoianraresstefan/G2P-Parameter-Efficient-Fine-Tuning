@@ -17,9 +17,12 @@ match, equivalent to the official WER for space-delimited outputs). For these
 languages phonemes are predominantly single characters, so character-level PER
 closely tracks phoneme-level PER.
 """
+
 from __future__ import annotations
 
 from typing import Sequence
+
+import numpy as np
 
 
 def to_chars(seq) -> list[str]:
@@ -73,7 +76,6 @@ def make_compute_metrics(tokenizer):
     Decodes generated predictions and labels (replacing -100 with pad), splits
     on whitespace into phoneme token lists, and reports PER/WER.
     """
-    import numpy as np
 
     def compute_metrics(eval_preds):
         preds, labels = eval_preds

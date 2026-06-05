@@ -8,11 +8,14 @@ HuggingFace dataset for training.
 The pure-Python helpers (`read_tsv`, `filter_long`, `build_input`) import nothing
 heavy, so they run locally without torch/datasets installed.
 """
+
 from __future__ import annotations
 
 import random
 import unicodedata
-from pathlib import Path
+
+# from pathlib import Path
+from datasets import Dataset
 
 from .config import (
     LANG_TAG,
@@ -20,6 +23,7 @@ from .config import (
     MAX_CHARS_FILTER,
     MAX_SOURCE_LEN,
     MAX_TARGET_LEN,
+    SEED,
 )
 
 
@@ -68,7 +72,6 @@ def to_hf_dataset(pairs, file_code: str, tokenizer):
     convention (no EOS on the encoder side). Targets keep their EOS so the model
     learns to stop. The collator later pads labels with -100.
     """
-    from datasets import Dataset
 
     inputs = [build_input(g, file_code) for g, _ in pairs]
     targets = [" ".join(ph) for _, ph in pairs]
@@ -83,7 +86,7 @@ def to_hf_dataset(pairs, file_code: str, tokenizer):
     return Dataset.from_dict(model_inputs)
 
 
-def load_english_forgetting(eng_test_path, n: int = 1000, seed: int = 42):
+def load_english_forgetting(eng_test_path, n: int = 1000, seed: int = SEED):
     """Seeded random sample of the English IPA test set for the forgetting eval."""
     pairs = filter_long(read_tsv(eng_test_path))
     rng = random.Random(seed)

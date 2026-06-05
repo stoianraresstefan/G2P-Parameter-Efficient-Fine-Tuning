@@ -3,15 +3,17 @@
 Heavy imports (transformers, peft, torch) are deferred to call time so the rest
 of the package stays importable on a CPU-only machine without these installed.
 """
+
 from __future__ import annotations
 
 from .config import BASE_MODEL, TOKENIZER_NAME
 
+from transformers import T5ForConditionalGeneration, AutoTokenizer
+from peft import LoraConfig, get_peft_model, TaskType
+
 
 def load_base():
     """Load the CharsiuG2P ByT5 model and the ByT5 tokenizer."""
-    from transformers import T5ForConditionalGeneration, AutoTokenizer
-
     tokenizer = AutoTokenizer.from_pretrained(TOKENIZER_NAME)
     model = T5ForConditionalGeneration.from_pretrained(BASE_MODEL)
     return model, tokenizer
@@ -49,7 +51,6 @@ def build_lora(model, r: int, alpha: int, dropout: float = 0.0):
     PEFT suffix-matches `target_modules`, so ["q","k","v","o"] patches all four
     projections across self- and cross-attention in both encoder and decoder.
     """
-    from peft import LoraConfig, get_peft_model, TaskType
 
     cfg = LoraConfig(
         task_type=TaskType.SEQ_2_SEQ_LM,

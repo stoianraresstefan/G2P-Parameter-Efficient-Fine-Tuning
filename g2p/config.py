@@ -5,37 +5,33 @@ This is the single source of truth for the `rum -> ron` tag correction and the
 prefix format. Keeping everything here means the Kaggle kernel and the local
 tooling cannot drift.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass
 
-# --------------------------------------------------------------------------- #
-# Model / tokenizer
-# --------------------------------------------------------------------------- #
+# Model & tokenizer
 BASE_MODEL = "charsiu/g2p_multilingual_byT5_small"
-# ByT5 is byte-level; the model repo ships no tokenizer files, so load the
-# tokenizer from the base google/byt5-small (CharsiuG2P does the same).
 TOKENIZER_NAME = "google/byt5-small"
+# ByT5 is byte-level
+# the model's repo does not provide the tokenizer, so we load it as a
+# standalone
 
-# --------------------------------------------------------------------------- #
+
 # Language tags
-# --------------------------------------------------------------------------- #
 # SIGMORPHON file code  ->  CharsiuG2P language tag (ISO 639-3).
 # IMPORTANT: Romanian SIGMORPHON files are named `rum_*` (ISO 639-2/B), but
 # CharsiuG2P was trained with the ISO 639-3 tag `ron`. Greek matches (`gre`),
 # and US English (forgetting set) uses `eng-us`. Using the wrong tag silently
 # wrecks the zero-shot baseline.
 LANG_TAG = {"rum": "ron", "gre": "gre", "eng": "eng-us"}
-
 # Target adaptation languages (English is used only for the forgetting eval).
 LANGUAGES = ("rum", "gre")
-
 # Input format. The space after the colon is REQUIRED by CharsiuG2P.
 PREFIX_TEMPLATE = "<{tag}>: {word}"
 
-# --------------------------------------------------------------------------- #
+
 # Sequence lengths
-# --------------------------------------------------------------------------- #
 # The outline filters word pairs longer than 50 CHARACTERS. The model's
 # byte-level max_length is set generously because Greek/IPA characters are
 # multi-byte (a 50-char Greek word is ~100 UTF-8 bytes), so 50 would truncate.
@@ -44,18 +40,16 @@ MAX_SOURCE_LEN = 128
 MAX_TARGET_LEN = 128
 GEN_MAX_LENGTH = 128
 
-# --------------------------------------------------------------------------- #
+
 # Method identifiers
-# --------------------------------------------------------------------------- #
 ZEROSHOT = "zeroshot"
 FROZEN_HEAD = "frozen_head"
 LORA = "lora"
 FULL_FT = "full_ft"
 METHODS = (ZEROSHOT, FROZEN_HEAD, LORA, FULL_FT)
 
-# --------------------------------------------------------------------------- #
-# Forgetting evaluation
-# --------------------------------------------------------------------------- #
+
+# Params for Eng forgetting eval
 ENG_FORGETTING_N = 1000
 ENG_FORGETTING_SEED = 42
 
@@ -87,13 +81,16 @@ HP = {
 }
 
 
+SEED = 42
+
+
 @dataclass(frozen=True)
 class RunSpec:
     language: str
     method: str
     lora_rank: int | None = None
     lora_alpha: int | None = None
-    seed: int = 42
+    seed: int = SEED
 
     @property
     def name(self) -> str:
@@ -112,11 +109,11 @@ def build_matrix(language: str) -> list[RunSpec]:
     headline variance estimate. Total across both languages: 5 + 5 + 2 = 12.
     """
     specs = [
-        RunSpec(language, ZEROSHOT, seed=42),
-        RunSpec(language, FROZEN_HEAD, seed=42),
-        RunSpec(language, LORA, lora_rank=8, lora_alpha=16, seed=42),
-        RunSpec(language, LORA, lora_rank=16, lora_alpha=32, seed=42),
-        RunSpec(language, FULL_FT, seed=42),
+        RunSpec(language, ZEROSHOT, seed=SEED),
+        RunSpec(language, FROZEN_HEAD, seed=SEED),
+        RunSpec(language, LORA, lora_rank=8, lora_alpha=16, seed=SEED),
+        RunSpec(language, LORA, lora_rank=16, lora_alpha=32, seed=SEED),
+        RunSpec(language, FULL_FT, seed=SEED),
     ]
     if language == "rum":
         specs += [

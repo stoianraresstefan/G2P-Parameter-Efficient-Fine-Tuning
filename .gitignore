@@ -235,3 +235,8 @@ paper/*.out
 paper/*.toc
 # Third-party SIGMORPHON data/eval clone (fetched on demand, not part of this repo)
 2021-task1/
+
+
+.vscode/settings.json
+.vscode/
+**/.vscode
