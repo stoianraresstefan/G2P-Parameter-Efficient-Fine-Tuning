@@ -248,3 +248,6 @@ paper/fonts/
 kaggle/fallback_notebook.ipynb
 scripts/make_pptx.py
 paper-outline.md
+# Office/editor lock and temp files
+~$*
+*.tmp
