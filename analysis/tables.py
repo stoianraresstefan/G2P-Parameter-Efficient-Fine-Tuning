@@ -69,7 +69,9 @@ def build_table1(cells: list[AggCell], standalone: bool = False) -> str:
             row.append(_fmt_num(c.wer_mean, c.wer_std, best.get((lang, "wer")) == cfg))
         lines.append(" & ".join(row) + r" \\")
     lines.append(r"\midrule")
-    base = [r"SIGMORPHON'21 baseline"]
+    # Short row label to keep the first column narrow; the caption identifies
+    # this as the reported SIGMORPHON 2021 low-resource baseline.
+    base = [r"Baseline"]
     for lang in LANG_ORDER:
         base += ["--", f"{SIGMORPHON_BASELINE_WER[lang]:.2f}"]
     lines.append(" & ".join(base) + r" \\")
