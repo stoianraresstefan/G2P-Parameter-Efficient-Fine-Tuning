@@ -1,0 +1,144 @@
+{
+  "rum": {
+    "n_train": 800,
+    "n_dev": 100,
+    "n_test": 100,
+    "exact_grapheme": {
+      "count": 0,
+      "pct_of_test": 0.0,
+      "examples": []
+    },
+    "exact_pair": {
+      "count": 0,
+      "pct_of_test": 0.0,
+      "examples": []
+    },
+    "substring_lemma": {
+      "count": 28,
+      "pct_of_test": 28.0,
+      "examples": [
+        "cenzura",
+        "culoarea",
+        "deci",
+        "existe",
+        "fabricai",
+        "fapt",
+        "faptele",
+        "furia",
+        "insulte",
+        "modifica",
+        "modificat",
+        "momente",
+        "muri",
+        "numelui",
+        "oprite",
+        "pornografice",
+        "prietena",
+        "prietenie",
+        "promis",
+        "seduce"
+      ]
+    },
+    "prefix_stem": {
+      "count": 26,
+      "pct_of_test": 26.0,
+      "examples": [
+        "analizeze",
+        "cenzura",
+        "completat",
+        "completez",
+        "culoarea",
+        "exemple",
+        "existe",
+        "fabricai",
+        "fantezii",
+        "faptele",
+        "figuri",
+        "francez",
+        "francezi",
+        "insulte",
+        "modifica",
+        "modificat",
+        "moldova",
+        "momente",
+        "numelui",
+        "oprite"
+      ]
+    },
+    "phoneme_seq": {
+      "count": 0,
+      "pct_of_test": 0.0,
+      "examples": []
+    }
+  },
+  "gre": {
+    "n_train": 800,
+    "n_dev": 100,
+    "n_test": 100,
+    "exact_grapheme": {
+      "count": 0,
+      "pct_of_test": 0.0,
+      "examples": []
+    },
+    "exact_pair": {
+      "count": 0,
+      "pct_of_test": 0.0,
+      "examples": []
+    },
+    "substring_lemma": {
+      "count": 15,
+      "pct_of_test": 15.0,
+      "examples": [
+        "έναρξη",
+        "αξιοπρέπεια",
+        "βδομάδα",
+        "δημοκρατίασ",
+        "δράσεισ",
+        "ενέργεια",
+        "ευθεία",
+        "ζήτησα",
+        "κωνσταντινούπολησ",
+        "νεκρό",
+        "περιόδου",
+        "πόδι",
+        "πύργοσ",
+        "σταμάτησ",
+        "υπέροχα"
+      ]
+    },
+    "prefix_stem": {
+      "count": 15,
+      "pct_of_test": 15.0,
+      "examples": [
+        "αναλυτήσ",
+        "βάλουν",
+        "δημοκρατίασ",
+        "δυνάμεισ",
+        "εξοπλισμένα",
+        "εξοπλισμένων",
+        "ηλικιωμένων",
+        "κωνσταντινούπολησ",
+        "νεκρό",
+        "περιόδου",
+        "πιστεύεται",
+        "πύργοσ",
+        "σταμάτησ",
+        "υπέροχα",
+        "φυτικών"
+      ]
+    },
+    "phoneme_seq": {
+      "count": 7,
+      "pct_of_test": 7.0,
+      "examples": [
+        "δυνάμεισ",
+        "καλή",
+        "πιστεύεται",
+        "ποτέ",
+        "τισ",
+        "φύλλο",
+        "χείλια"
+      ]
+    }
+  }
+}

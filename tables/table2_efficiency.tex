@@ -1,0 +1,12 @@
+\begin{tabular}{lrrrr}
+\toprule
+Method & Trainable & \% of & \multicolumn{2}{c}{Train time (s)} \\
+ & params & base & Ro & El \\
+\midrule
+Zero-shot & 0 & 0.00 & -- & -- \\
+Frozen head & \textbf{565{,}248} & 0.19 & 445 & \textbf{346} \\
+LoRA (r=8) & 1{,}187{,}840 & 0.39 & 626 & 892 \\
+LoRA (r=16) & 2{,}375{,}680 & 0.78 & 472 & 889 \\
+Full FT & 300{,}768{,}256 & 100.00 & \textbf{444} & 669 \\
+\bottomrule
+\end{tabular}

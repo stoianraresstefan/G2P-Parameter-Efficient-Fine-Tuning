@@ -1,0 +1,15 @@
+\begin{tabular}{lcccc}
+\toprule
+ & \multicolumn{2}{c}{Romanian} & \multicolumn{2}{c}{Greek} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+Method & PER & WER & PER & WER \\
+\midrule
+Zero-shot & 4.48 & 22.00 & \textbf{1.56} & \textbf{10.00} \\
+Frozen head & 4.48 & 23.00 & 1.71 & 11.00 \\
+LoRA (r=8) & 4.11 $\pm$ 0.20 & 18.67 $\pm$ 2.36 & 7.32 & 35.00 \\
+LoRA (r=16) & 3.36 & 15.00 & 7.17 & 35.00 \\
+Full FT & \textbf{1.76} & \textbf{10.00} & 2.80 & 16.00 \\
+\midrule
+Baseline & -- & 10.00 & -- & 21.00 \\
+\bottomrule
+\end{tabular}

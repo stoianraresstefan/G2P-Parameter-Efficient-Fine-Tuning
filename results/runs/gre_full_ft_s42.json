@@ -1,0 +1,27 @@
+{
+  "language": "gre",
+  "lang_tag": "gre",
+  "method": "full_ft",
+  "lora_rank": null,
+  "lora_alpha": null,
+  "seed": 42,
+  "per": 2.8,
+  "wer": 16.0,
+  "trainable_params": 300768256,
+  "total_params": 300768256,
+  "trainable_pct": 100.0,
+  "train_seconds": 668.6,
+  "forgetting_per": 43.33,
+  "base_model": "charsiu/g2p_multilingual_byT5_small",
+  "epochs": 30,
+  "lr": 0.0005,
+  "batch_size": 16,
+  "test_n": 100,
+  "eng_n": 1000,
+  "provenance": {
+    "transformers": "5.0.0",
+    "torch": "2.10.0+cu128",
+    "gpu": "Tesla T4",
+    "peft": "0.13.2"
+  }
+}

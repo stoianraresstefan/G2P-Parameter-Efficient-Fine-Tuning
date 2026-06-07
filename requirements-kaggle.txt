@@ -1,0 +1,5 @@
+# Installed inside the Kaggle kernel (see kaggle/kernel_*/run.py).
+# transformers, torch, datasets, and accelerate ship preinstalled in the Kaggle
+# GPU image; only `peft` is reliably missing/stale, so it is the sole pinned add.
+# The `evaluate` library is intentionally NOT used (PER/WER are computed by g2p.metrics).
+peft==0.13.2
